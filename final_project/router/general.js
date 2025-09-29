@@ -41,13 +41,21 @@ public_users.get('/', async (req, res) => {
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
-  const isbn = req.params.isbn;
-  const book = books[isbn];
-  if (book) {
-    res.json(book);
-  } else {
-    res.status(404).json({message: "Book not found"});
+public_users.get('/isbn/:isbn', async (req, res) => {
+  try {
+    // const response = await axios.get(`http://localhost:5000/isbn/${req.params.isbn}`);
+    // const book = response.data;
+
+    // Using local books object for demonstration
+    const isbn = req.params.isbn;
+    const book = books[isbn];
+    if (book) {
+      res.json(book);
+    } else {
+      res.status(404).json({ message: "Book not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching book details" });
   }
 });
   
