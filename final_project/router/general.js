@@ -90,15 +90,30 @@ public_users.get('/author/:author',async (req, res) => {
 });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
-  const requestedTitle = req.params.title.toLowerCase().normalize("NFC");
-  const matchingBooks = Object.values(books).filter(book =>
-    book.title.toLowerCase().normalize("NFC") === requestedTitle
-  );
-  if (matchingBooks.length > 0) {
-    res.json(matchingBooks);
-  } else {
-    res.status(404).json({message: "No books found with this title"});
+public_users.get('/title/:title',async (req, res) => {
+  // const requestedTitle = req.params.title.toLowerCase().normalize("NFC");
+  // const matchingBooks = Object.values(books).filter(book =>
+  //   book.title.toLowerCase().normalize("NFC") === requestedTitle
+  // );
+  // if (matchingBooks.length > 0) {
+  //   res.json(matchingBooks);
+  // } else {
+  //   res.status(404).json({message: "No books found with this title"});
+  // }
+
+    try {
+    // Using local books object for demonstration
+    const requestedTitle = req.params.title.toLowerCase().normalize("NFC");
+    const matchingBooks = Object.values(books).filter(book =>
+      book.title.toLowerCase().normalize("NFC") === requestedTitle
+    );
+    if (matchingBooks.length > 0) {
+      res.json(matchingBooks);
+    } else {
+      res.status(404).json({ message: "No books found with this title" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching book details" });
   }
 });
 
