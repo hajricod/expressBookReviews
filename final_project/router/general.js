@@ -3,6 +3,7 @@ let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
+const axios = require('axios');
 
 
 public_users.post("/register", (req, res) => {
@@ -25,10 +26,18 @@ public_users.post("/register", (req, res) => {
 });
 
 // Get the book list available in the shop
-public_users.get('/',function (req, res) {
-  const titles = Object.values(books).map(book => book.title);
-  res.json(titles);
+public_users.get('/', async (req, res) => {
+  // const titles = Object.values(books).map(book => book.title);
+  // res.json(titles);
   // res.send(JSON.stringify(books,null,4));
+    try {
+
+    // Using local books object for demonstration
+    const titles = Object.values(books).map(book => book.title);
+    res.json(titles);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching books" });
+  }
 });
 
 // Get book details based on ISBN
