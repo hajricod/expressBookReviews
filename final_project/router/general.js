@@ -26,96 +26,136 @@ public_users.post("/register", (req, res) => {
 });
 
 // Get the book list available in the shop
-public_users.get('/', async (req, res) => {
-  // const titles = Object.values(books).map(book => book.title);
-  // res.json(titles);
-  // res.send(JSON.stringify(books,null,4));
-    try {
-
-    // Using local books object for demonstration
-    const titles = Object.values(books).map(book => book.title);
-    res.json(titles);
+public_users.get('/', async (req, res) =>{
+  try {
+    const response = await axios.get('http://localhost:8080/');
+    res.status(200).json(response.data);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching books" });
+    res.status(500).json({ message: "Error fetching book list", error: error.message });
   }
 });
+
+// public_users.get('/', async (req, res) => {
+//   // const titles = Object.values(books).map(book => book.title);
+//   // res.json(titles);
+//   // res.send(JSON.stringify(books,null,4));
+//     try {
+
+//     // Using local books object for demonstration
+//     const titles = Object.values(books).map(book => book.title);
+//     res.json(titles);
+//   } catch (error) {
+//     res.status(500).json({ message: "Error fetching books" });
+//   }
+// });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn', async (req, res) => {
-  try {
-    // const response = await axios.get(`http://localhost:5000/isbn/${req.params.isbn}`);
-    // const book = response.data;
 
-    // Using local books object for demonstration
+public_users.get('/isbn/:isbn',async (req, res) => {
+  try {
     const isbn = req.params.isbn;
-    const book = books[isbn];
-    if (book) {
-      res.json(book);
-    } else {
-      res.status(404).json({ message: "Book not found" });
-    }
+    const response = await axios.get(`http://localhost:8080/isbn/${isbn}`);
+    res.status(200).json(response.data);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching book details" });
+    res.status(404).json({ message: "Book not found", error: error.message });
   }
 });
+
+// public_users.get('/isbn/:isbn', async (req, res) => {
+//   try {
+//     // const response = await axios.get(`http://localhost:5000/isbn/${req.params.isbn}`);
+//     // const book = response.data;
+
+//     // Using local books object for demonstration
+//     const isbn = req.params.isbn;
+//     const book = books[isbn];
+//     if (book) {
+//       res.json(book);
+//     } else {
+//       res.status(404).json({ message: "Book not found" });
+//     }
+//   } catch (error) {
+//     res.status(500).json({ message: "Error fetching book details" });
+//   }
+// });
   
 // Get book details based on author
-public_users.get('/author/:author',async (req, res) => {
-  /*
-    const requestedAuthor = req.params.author.toLowerCase().normalize("NFC");
-    const matchingBooks = Object.values(books).filter(book => 
-      book.author.toLowerCase().normalize("NFC") === requestedAuthor
-    );
-    if (matchingBooks.length > 0) {
-      res.json(matchingBooks);
-    } else {
-      res.status(404).json({message: "No books found for this author"});
-    }
-  */
-
-    try {
-    // Using local books object for demonstration
-    const requestedAuthor = req.params.author.toLowerCase().normalize("NFC");
-    const matchingBooks = Object.values(books).filter(book =>
-      book.author.toLowerCase().normalize("NFC") === requestedAuthor
-    );
-    if (matchingBooks.length > 0) {
-      res.json(matchingBooks);
-    } else {
-      res.status(404).json({ message: "No books found for this author" });
-    }
+public_users.get('/author/:author', async (req, res) => {
+  try {
+    const author = req.params.author;
+    const response = await axios.get(`http://localhost:8080/author/${encodeURIComponent(author)}`);
+    res.status(200).json(response.data);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching book details" });
+    res.status(404).json({ message: "Author not found", error: error.message });
   }
 });
+
+// public_users.get('/author/:author',async (req, res) => {
+//   /*
+//     const requestedAuthor = req.params.author.toLowerCase().normalize("NFC");
+//     const matchingBooks = Object.values(books).filter(book => 
+//       book.author.toLowerCase().normalize("NFC") === requestedAuthor
+//     );
+//     if (matchingBooks.length > 0) {
+//       res.json(matchingBooks);
+//     } else {
+//       res.status(404).json({message: "No books found for this author"});
+//     }
+//   */
+
+//     try {
+//     // Using local books object for demonstration
+//     const requestedAuthor = req.params.author.toLowerCase().normalize("NFC");
+//     const matchingBooks = Object.values(books).filter(book =>
+//       book.author.toLowerCase().normalize("NFC") === requestedAuthor
+//     );
+//     if (matchingBooks.length > 0) {
+//       res.json(matchingBooks);
+//     } else {
+//       res.status(404).json({ message: "No books found for this author" });
+//     }
+//   } catch (error) {
+//     res.status(500).json({ message: "Error fetching book details" });
+//   }
+// });
 
 // Get all books based on title
-public_users.get('/title/:title',async (req, res) => {
-  // const requestedTitle = req.params.title.toLowerCase().normalize("NFC");
-  // const matchingBooks = Object.values(books).filter(book =>
-  //   book.title.toLowerCase().normalize("NFC") === requestedTitle
-  // );
-  // if (matchingBooks.length > 0) {
-  //   res.json(matchingBooks);
-  // } else {
-  //   res.status(404).json({message: "No books found with this title"});
-  // }
-
-    try {
-    // Using local books object for demonstration
-    const requestedTitle = req.params.title.toLowerCase().normalize("NFC");
-    const matchingBooks = Object.values(books).filter(book =>
-      book.title.toLowerCase().normalize("NFC") === requestedTitle
-    );
-    if (matchingBooks.length > 0) {
-      res.json(matchingBooks);
-    } else {
-      res.status(404).json({ message: "No books found with this title" });
-    }
+public_users.get('/title/:title', async (req, res) => {
+  try {
+    const title = req.params.title;
+    const response = await axios.get(`http://localhost:8080/title/${encodeURIComponent(title)}`);
+    res.status(200).json(response.data);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching book details" });
+    res.status(404).json({ message: "No books found with this title", error: error.message });
   }
 });
+
+// public_users.get('/title/:title',async (req, res) => {
+//   // const requestedTitle = req.params.title.toLowerCase().normalize("NFC");
+//   // const matchingBooks = Object.values(books).filter(book =>
+//   //   book.title.toLowerCase().normalize("NFC") === requestedTitle
+//   // );
+//   // if (matchingBooks.length > 0) {
+//   //   res.json(matchingBooks);
+//   // } else {
+//   //   res.status(404).json({message: "No books found with this title"});
+//   // }
+
+//     try {
+//     // Using local books object for demonstration
+//     const requestedTitle = req.params.title.toLowerCase().normalize("NFC");
+//     const matchingBooks = Object.values(books).filter(book =>
+//       book.title.toLowerCase().normalize("NFC") === requestedTitle
+//     );
+//     if (matchingBooks.length > 0) {
+//       res.json(matchingBooks);
+//     } else {
+//       res.status(404).json({ message: "No books found with this title" });
+//     }
+//   } catch (error) {
+//     res.status(500).json({ message: "Error fetching book details" });
+//   }
+// });
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
